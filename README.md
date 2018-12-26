@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/railken/dotenv.svg?branch=master)](https://travis-ci.org/railken/dotenv)
 
-This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that add the method store()
+This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that grant you the ability to persist updated variables into the `.env` file.
 # Requirements
 
 PHP 7.1 and later.

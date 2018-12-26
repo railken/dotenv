@@ -1,9 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-
 use Railken\Dotenv\Dotenv;
-use Railken\Dotenv\Storage;
 
 class StorageTest extends TestCase
 {
@@ -11,10 +9,10 @@ class StorageTest extends TestCase
     {
         $this->commonTest([
             'x' => '1',
-            'y' => '"2"'
+            'y' => '"2"',
         ], [
             'x' => 'A',
-            'y' => 'B'
+            'y' => 'B',
         ]);
     }
 
@@ -22,7 +20,7 @@ class StorageTest extends TestCase
     {
         $this->commonTest([
             'x' => '1$2',
-            'y' => '"My Name"'
+            'y' => '"My Name"',
         ], [
             'x' => 'A$B',
             'y' => 'My new Name',
@@ -31,10 +29,10 @@ class StorageTest extends TestCase
 
     public function commonTest($org, $new)
     {
-        $path = __DIR__."/../../var";
+        $path = __DIR__.'/../../var';
 
         $this->assureExistsDir($path);
-        file_put_contents($path."/.env", urldecode(http_build_query($org, '', PHP_EOL)));
+        file_put_contents($path.'/.env', urldecode(http_build_query($org, '', PHP_EOL)));
         $dotenv = new Dotenv($path);
         $dotenv->overload();
 
@@ -46,7 +44,7 @@ class StorageTest extends TestCase
             $this->assertEquals(getenv($key), $value);
         }
 
-        unlink($path."/.env");
+        unlink($path.'/.env');
     }
 
     public function assureExistsDir(string $path)

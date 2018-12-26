@@ -1,9 +1,9 @@
 <?php
+
 namespace Railken\Dotenv;
 
-use Dotenv\Loader;
-use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
 use Closure;
+use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
 
 class Storage
 {
@@ -18,8 +18,6 @@ class Storage
      * Create a new storage instance.
      *
      * @param string $filePath
-     *
-     * @return void
      */
     public function __construct($filePath)
     {
@@ -27,34 +25,32 @@ class Storage
     }
 
     /**
-     * Store the variable in the .env file
+     * Store the variable in the .env file.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param string  $key
+     * @param mixed   $value
      * @param Closure $callback
-     *
-     * @return void
      */
     public function store(string $key, $value = null, Closure $callback = null)
     {
         $content = file_get_contents($this->filePath);
         $oldValue = getenv($key);
 
-        $oldValue = str_replace("$", "\\$", $oldValue);
+        $oldValue = str_replace('$', '\$', $oldValue);
 
-        if (preg_match(sprintf("/%s=%s/", $key, $oldValue), $content, $matches)) {
+        if (preg_match(sprintf('/%s=%s/', $key, $oldValue), $content, $matches)) {
             return $this->set($matches, $key, $value, $callback);
         }
 
-        if (preg_match(sprintf("/%s=\"%s\"/", $key, $oldValue), $content, $matches)) {
+        if (preg_match(sprintf('/%s="%s"/', $key, $oldValue), $content, $matches)) {
             return $this->set($matches, $key, $value, $callback);
         }
 
-        throw new InvalidKeyValuePairException(sprintf("%s=%s", $key, $oldValue));
+        throw new InvalidKeyValuePairException(sprintf('%s=%s', $key, $oldValue));
     }
 
     /**
-     * Parse key before putting into the .env file
+     * Parse key before putting into the .env file.
      *
      * @param string $key
      *
@@ -66,7 +62,7 @@ class Storage
     }
 
     /**
-     * Parse value before putting into the .env file
+     * Parse value before putting into the .env file.
      *
      * @param mixed $value
      *
@@ -83,12 +79,12 @@ class Storage
         return $value;
     }
 
-    /** 
-     * Set the new value
+    /**
+     * Set the new value.
      *
-     * @param array $matches
-     * @param string $key
-     * @param mixed $value
+     * @param array   $matches
+     * @param string  $key
+     * @param mixed   $value
      * @param Closure $callback
      */
     public function set(array $matches, string $key, $value, Closure $callback = null)
@@ -100,16 +96,14 @@ class Storage
             $callback($key, $value);
         }
 
-        return $this->replace($matches[0], sprintf("%s=%s", $key, $value));
+        return $this->replace($matches[0], sprintf('%s=%s', $key, $value));
     }
 
     /**
-     * Replace string in .env file
+     * Replace string in .env file.
      *
      * @param string $original
      * @param string $new
-     *
-     * @return void
      */
     public function replace(string $original, string $new)
     {

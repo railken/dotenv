@@ -1,4 +1,5 @@
 <?php
+
 namespace Railken\Dotenv;
 
 use Dotenv\Dotenv as BaseDotenv;
@@ -17,8 +18,6 @@ class Dotenv extends BaseDotenv
      *
      * @param string $path
      * @param string $file
-     *
-     * @return void
      */
     public function __construct($path, $file = '.env')
     {
@@ -28,20 +27,18 @@ class Dotenv extends BaseDotenv
     }
 
     /**
-     * Store the variable in the .env file
+     * Store the variable in the .env file.
      *
      * @param string $key
-     * @param mixed $value
-     *
-     * @return void
+     * @param mixed  $value
      */
     public function store(string $key, $value)
     {
-        $this->storage->store($key, $value, function($parsedKey, $parsedValue) {
+        $this->storage->store($key, $value, function ($parsedKey, $parsedValue) {
             $this->loader->setEnvironmentVariable($parsedKey, $parsedValue);
         });
     }
-    
+
     /**
      * @return \Railken\Dotenv\Storage|null
      */

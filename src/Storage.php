@@ -36,30 +36,19 @@ class Storage
 
         $oldValue = str_replace('$', '\$', $oldValue);
 
+        $variable = new Variable();
+
         if (preg_match(sprintf('/%s=%s/', $key, $oldValue), $content, $matches)) {
-            $variable = $this->createVariable($matches);
+            $variable->setOriginal($matches[0]);
         }
 
         if (preg_match(sprintf('/%s="%s"/', $key, $oldValue), $content, $matches)) {
-            $variable = $this->createVariable($matches);
+            $variable->setOriginal($matches[0]);
         }
 
-        if (!isset($variable)) {
+        if (!$variable->getOriginal()) {
             throw new InvalidKeyValuePairException(sprintf('%s=%s', $key, $oldValue));
         }
-
-        return $variable;
-    }
-
-    /**
-     * Set the new value.
-     *
-     * @param array $matches
-     */
-    public function createVariable(array $matches)
-    {
-        $variable = new Variable();
-        $variable->setOriginal($matches[0]);
 
         return $variable;
     }
@@ -71,7 +60,11 @@ class Storage
      */
     public function persistVariable(Variable $variable)
     {
-        file_put_contents($this->filePath, str_replace($variable->getOriginal(), $variable->toFile(), file_get_contents($this->filePath)));
+        if ($variable->getOriginal()) {
+            file_put_contents($this->filePath, str_replace($variable->getOriginal(), $variable->toFile(), file_get_contents($this->filePath)));
+        } else {
+            file_put_contents($this->filePath, file_get_contents($this->filePath).PHP_EOL.$variable->toFile());
+        }
     }
 
     /**
@@ -80,9 +73,26 @@ class Storage
      * @param string $key
      * @param mixed  $value
      */
-    public function store(string $key, $value)
+    public function store(string $key, $value = null)
     {
         $variable = $this->prepare($key);
+
+        $variable->setKeyFromRaw($key);
+        $variable->setValueFromRaw($value);
+        $this->persistVariable($variable);
+
+        return $variable;
+    }
+
+    /**
+     * Store the variable in the .env file.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function append(string $key, $value = null)
+    {
+        $variable = new Variable();
         $variable->setKeyFromRaw($key);
         $variable->setValueFromRaw($value);
         $this->persistVariable($variable);

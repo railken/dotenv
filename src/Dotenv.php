@@ -35,7 +35,7 @@ class Dotenv extends BaseDotenv
     }
 
     /**
-     * Store the variable in the .env file.
+     * Update an environment variable.
      *
      * @param string $key
      * @param mixed  $value
@@ -48,7 +48,7 @@ class Dotenv extends BaseDotenv
     }
 
     /**
-     * Store the variable in the .env file.
+     * Remove an environment variable.
      *
      * @param string $key
      */
@@ -57,5 +57,18 @@ class Dotenv extends BaseDotenv
         $variable = $this->storage->remove($key);
 
         $this->loader->clearEnvironmentVariable($variable->getKey());
+    }
+
+    /**
+     * Append an environment variable.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function appendVariable(string $key, $value)
+    {
+        $variable = $this->storage->append($key, $value);
+
+        $this->loader->setEnvironmentVariable($variable->getKey(), $variable->getValue());
     }
 }

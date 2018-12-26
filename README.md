@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/railken/dotenv.svg?branch=master)](https://travis-ci.org/railken/dotenv)
 
 This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that grant you the ability to persist updated variables into the `.env` file.
+You can either update, persist or remove a variable.
+
 # Requirements
 
 PHP 7.1 and later.
@@ -29,7 +31,9 @@ $path = __DIR__;
 $dotenv = new Dotenv($path);
 $dotenv->load();
 
-$dotenv->storeVariable("APP_KEY", "NEW KEY");
+$dotenv->storeVariable("APP_KEY", "foo");
+$dotenv->appendVariable("NEW_KEY", 2);
+$dotenv->removeVariable("NEW_KEY");
 ```
 
 The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
@@ -44,4 +48,6 @@ $path = __DIR__;
 
 $storage = new Storage($path);
 $storage->store("APP_KEY", "NEW KEY");
+$storage->append("NEW_KEY", 2);
+$storage->remove("NEW_KEY");
 ```

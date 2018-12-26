@@ -48,25 +48,14 @@ class Storage
         $oldValue = str_replace("$", "\\$", $oldValue);
 
         if (preg_match(sprintf("/%s=%s/", $key, $oldValue), $content, $matches)) {
-            return $this->replace($matches[0], $this->format($key, $value));
+            return $this->set($matches, $key, $value);
         }
 
         if (preg_match(sprintf("/%s=\"%s\"/", $key, $oldValue), $content, $matches)) {
-            return $this->replace($matches[0], $this->format($key, $value));
+            return $this->set($matches, $key, $value);
         }
 
         throw new InvalidKeyValuePairException(sprintf("%s=%s", $key, $oldValue));
-    }
-
-    /**
-     * Prepare key and value before putting into the .env file
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function format(string $key, $value)
-    {
-        return sprintf("%s=%s", $this->parseKey($key), $this->parseValue($value));
     }
 
     /**
@@ -97,6 +86,23 @@ class Storage
         }
 
         return $value;
+    }
+
+    /** 
+     * Set the new value
+     *
+     * @param array $matches
+     * @param string $key
+     * @param mixed $value
+     */
+    public function set(array $matches, string $key, $value)
+    {
+        $key = $this->parseKey($key);
+        $value = $this->parseValue($value);
+
+        $this->loader->setEnvironmentVariable($key, $value);
+        
+        return $this->replace($matches[0], sprintf("%s=%s", $key, $value));
     }
 
     /**

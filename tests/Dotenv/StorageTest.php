@@ -42,8 +42,6 @@ class StorageTest extends TestCase
             $dotenv->store($key, $value);
         }
 
-        $dotenv->overload();
-
         foreach ($new as $key => $value) {
             $this->assertEquals(getenv($key), $value);
         }

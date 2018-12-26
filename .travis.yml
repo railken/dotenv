@@ -5,8 +5,6 @@ sudo: true
 addons:
   apt:
     packages:
-      - mysql-server
-      - mysql-client
       - libxml2-utils
       - unzip
       - xvfb

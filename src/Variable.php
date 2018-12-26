@@ -48,6 +48,7 @@ class Variable
     {
         return $this->getValue() === false ? '' : sprintf('%s=%s', $this->getKey(), $this->getValue());
     }
+
     public function setKeyFromRaw(string $key): Variable
     {
         return $this->setKey($this->parseKey($key));

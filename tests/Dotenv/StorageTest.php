@@ -5,10 +5,9 @@ use Railken\Dotenv\Dotenv;
 
 class StorageTest extends TestCase
 {
-
     public function testRemove()
     {
-    	$startingVariables = [
+        $startingVariables = [
             'x' => '1',
             'y' => '"2"',
         ];
@@ -26,7 +25,7 @@ class StorageTest extends TestCase
 
     public function testBasics()
     {
-    	$startingVariables = [
+        $startingVariables = [
             'x' => '1',
             'y' => '"2"',
         ];

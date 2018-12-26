@@ -19,9 +19,9 @@ class Storage
      * @param string $dirPath
      * @param string $env
      */
-    public function __construct($dirPath = __DIR__, $env = ".env")
+    public function __construct($dirPath = __DIR__, $env = '.env')
     {
-        $this->filePath = $dirPath . "/" . $env;
+        $this->filePath = $dirPath.'/'.$env;
     }
 
     /**
@@ -54,7 +54,7 @@ class Storage
     /**
      * Set the new value.
      *
-     * @param array  $matches
+     * @param array $matches
      */
     public function createVariable(array $matches)
     {
@@ -104,6 +104,4 @@ class Storage
 
         return $variable;
     }
-    
-
 }

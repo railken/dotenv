@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/railken/dotenv.svg?branch=master)](https://travis-ci.org/railken/dotenv)
 
+This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that add the method store()
 # Requirements
 
 PHP 7.1 and later.
@@ -19,7 +20,6 @@ composer require railken/dotenv
 A simple usage looks like: 
 
 ```php
-
 use Railken\Dotenv\Dotenv;
 
 $dotenv = new Dotenv(__DIR__);
@@ -28,12 +28,11 @@ $dotenv->load();
 $dotenv->store("APP_KEY", "NEW KEY");
 ```
 
-The class extends the [Dotenv](https://github.com/vlucas/phpdotenv/blob/master/src/Dotenv.php) to add the store method.
+The class is a simple extension of `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
 
 If you wish to use indipendently it from the Dotenv, you can use directly the Storage, but you'll need a loader
 
 ```php
-
 use Railken\Dotenv\Storage;
 use Dotenv\Loader;
 

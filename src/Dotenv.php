@@ -24,7 +24,7 @@ class Dotenv extends BaseDotenv
     {
         parent::__construct($path, $file);
 
-        $this->storage = new Storage($this->loader, $this->filePath);
+        $this->storage = new Storage($this->filePath);
     }
 
     /**
@@ -37,7 +37,9 @@ class Dotenv extends BaseDotenv
      */
     public function store(string $key, $value)
     {
-        $this->storage->store($key, $value);
+        $this->storage->store($key, $value, function($parsedKey, $parsedValue) {
+            $this->loader->setEnvironmentVariable($parsedKey, $parsedValue);
+        });
     }
     
     /**

@@ -30,17 +30,13 @@ $dotenv->store("APP_KEY", "NEW KEY");
 
 The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
 
-If you wish to use directly the Storage, you'll need a loader
+If you wish you can use directly the `Railken\Dotenv\Storage`
 
 ```php
 use Railken\Dotenv\Storage;
-use Dotenv\Loader;
 
 $filePath = __DIR__ . "/.env";
 
-$loader = new Loader($filePath);
-$loader->load();
-
-$storage = new Storage($loader, $filePath);
+$storage = new Storage($filePath);
 $storage->store("APP_KEY", "NEW KEY");
 ```

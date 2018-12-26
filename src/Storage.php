@@ -3,6 +3,7 @@ namespace Railken\Dotenv;
 
 use Dotenv\Loader;
 use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
+use Closure;
 
 class Storage
 {
@@ -14,22 +15,15 @@ class Storage
     protected $filePath;
 
     /**
-     * @var \Dotenv\Loader
-     */
-    protected $loader;
-
-    /**
      * Create a new storage instance.
      *
-     * @param Loader $loader
      * @param string $filePath
      *
      * @return void
      */
-    public function __construct(Loader $loader, $filePath)
+    public function __construct($filePath)
     {
         $this->filePath = $filePath;
-        $this->loader = $loader;
     }
 
     /**
@@ -37,10 +31,11 @@ class Storage
      *
      * @param string $key
      * @param mixed $value
+     * @param Closure $callback
      *
      * @return void
      */
-    public function store(string $key, $value = null)
+    public function store(string $key, $value = null, Closure $callback = null)
     {
         $content = file_get_contents($this->filePath);
         $oldValue = getenv($key);
@@ -48,11 +43,11 @@ class Storage
         $oldValue = str_replace("$", "\\$", $oldValue);
 
         if (preg_match(sprintf("/%s=%s/", $key, $oldValue), $content, $matches)) {
-            return $this->set($matches, $key, $value);
+            return $this->set($matches, $key, $value, $callback);
         }
 
         if (preg_match(sprintf("/%s=\"%s\"/", $key, $oldValue), $content, $matches)) {
-            return $this->set($matches, $key, $value);
+            return $this->set($matches, $key, $value, $callback);
         }
 
         throw new InvalidKeyValuePairException(sprintf("%s=%s", $key, $oldValue));
@@ -94,14 +89,17 @@ class Storage
      * @param array $matches
      * @param string $key
      * @param mixed $value
+     * @param Closure $callback
      */
-    public function set(array $matches, string $key, $value)
+    public function set(array $matches, string $key, $value, Closure $callback = null)
     {
         $key = $this->parseKey($key);
         $value = $this->parseValue($value);
 
-        $this->loader->setEnvironmentVariable($key, $value);
-        
+        if ($callback) {
+            $callback($key, $value);
+        }
+
         return $this->replace($matches[0], sprintf("%s=%s", $key, $value));
     }
 

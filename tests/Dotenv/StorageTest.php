@@ -5,46 +5,115 @@ use Railken\Dotenv\Dotenv;
 
 class StorageTest extends TestCase
 {
-    public function testBasics()
+
+    public function testRemove()
     {
-        $this->commonTest([
+    	$startingVariables = [
             'x' => '1',
             'y' => '"2"',
-        ], [
+        ];
+
+        $endingVariables = [
+            'x' => '1',
+        ];
+
+        $this->iniEnv($startingVariables);
+        $this->commonTestRemove($endingVariables);
+        $this->commonTestAssert(['y' => '2', 'x' => false]);
+
+        $this->unlinkEnv();
+    }
+
+    public function testBasics()
+    {
+    	$startingVariables = [
+            'x' => '1',
+            'y' => '"2"',
+        ];
+
+        $endingVariables = [
             'x' => 'A',
             'y' => 'B',
-        ]);
+        ];
+
+        $this->iniEnv($startingVariables);
+        $this->commonTestStore($endingVariables);
+        $this->commonTestAssert($endingVariables);
+
+        $this->unlinkEnv();
     }
 
     public function testWithSpecialCharacters()
     {
-        $this->commonTest([
+        $startingVariables = [
             'x' => '1$2',
             'y' => '"My Name"',
-        ], [
+        ];
+
+        $endingVariables = [
             'x' => 'A$B',
             'y' => 'My new Name',
-        ]);
+        ];
+
+        $this->iniEnv($startingVariables);
+        $this->commonTestStore($endingVariables);
+        $this->commonTestAssert($endingVariables);
+
+        $this->unlinkEnv();
     }
 
-    public function commonTest($org, $new)
+    public function getPath()
     {
-        $path = __DIR__.'/../../var';
+        return __DIR__.'/../../var';
+    }
+
+    public function iniEnv($variables)
+    {
+        $path = $this->getPath();
 
         $this->assureExistsDir($path);
-        file_put_contents($path.'/.env', urldecode(http_build_query($org, '', PHP_EOL)));
-        $dotenv = new Dotenv($path);
+
+        file_put_contents($this->getPath().'/.env', urldecode(http_build_query($variables, '', PHP_EOL)));
+    }
+
+    public function unlinkEnv()
+    {
+        unlink($this->getPath().'/.env');
+    }
+
+    public function commonTestStore($variables)
+    {
+        $dotenv = $this->getDotenv();
+
+        foreach ($variables as $key => $value) {
+            $dotenv->storeVariable($key, $value);
+        }
+    }
+
+    public function commonTestRemove($variables)
+    {
+        $dotenv = $this->getDotenv();
+
+        foreach ($variables as $key => $value) {
+            $dotenv->removeVariable($key);
+        }
+    }
+
+    public function commonTestAssert($variables)
+    {
+        $dotenv = $this->getDotenv();
+
+        foreach ($variables as $key => $value) {
+            $this->assertSame(getenv($key), $value);
+        }
+    }
+
+    public function getDotenv()
+    {
+        $dotenv = new Dotenv($this->getPath());
         $dotenv->overload();
 
-        foreach ($new as $key => $value) {
-            $dotenv->store($key, $value);
-        }
-
-        foreach ($new as $key => $value) {
-            $this->assertEquals(getenv($key), $value);
-        }
-
-        unlink($path.'/.env');
+        return $dotenv;
     }
 
     public function assureExistsDir(string $path)

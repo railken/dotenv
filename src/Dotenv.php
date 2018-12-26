@@ -23,20 +23,7 @@ class Dotenv extends BaseDotenv
     {
         parent::__construct($path, $file);
 
-        $this->storage = new Storage($this->filePath);
-    }
-
-    /**
-     * Store the variable in the .env file.
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function store(string $key, $value)
-    {
-        $this->storage->store($key, $value, function ($parsedKey, $parsedValue) {
-            $this->loader->setEnvironmentVariable($parsedKey, $parsedValue);
-        });
+        $this->storage = new Storage($path, $file);
     }
 
     /**
@@ -45,5 +32,30 @@ class Dotenv extends BaseDotenv
     public function getStorage()
     {
         return $this->storage;
+    }
+
+    /**
+     * Store the variable in the .env file.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function storeVariable(string $key, $value)
+    {
+        $variable = $this->storage->store($key, $value);
+
+        $this->loader->setEnvironmentVariable($variable->getKey(), $variable->getValue());
+    }
+
+    /**
+     * Store the variable in the .env file.
+     *
+     * @param string $key
+     */
+    public function removeVariable(string $key)
+    {
+        $variable = $this->storage->remove($key);
+
+        $this->loader->clearEnvironmentVariable($variable->getKey());
     }
 }

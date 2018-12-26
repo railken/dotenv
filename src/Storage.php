@@ -2,7 +2,6 @@
 
 namespace Railken\Dotenv;
 
-use Closure;
 use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
 
 class Storage
@@ -17,21 +16,20 @@ class Storage
     /**
      * Create a new storage instance.
      *
-     * @param string $filePath
+     * @param string $dirPath
+     * @param string $env
      */
-    public function __construct($filePath)
+    public function __construct($dirPath = __DIR__, $env = ".env")
     {
-        $this->filePath = $filePath;
+        $this->filePath = $dirPath . "/" . $env;
     }
 
     /**
      * Store the variable in the .env file.
      *
-     * @param string  $key
-     * @param mixed   $value
-     * @param Closure $callback
+     * @param string $key
      */
-    public function store(string $key, $value = null, Closure $callback = null)
+    public function prepare(string $key)
     {
         $content = file_get_contents($this->filePath);
         $oldValue = getenv($key);
@@ -39,74 +37,73 @@ class Storage
         $oldValue = str_replace('$', '\$', $oldValue);
 
         if (preg_match(sprintf('/%s=%s/', $key, $oldValue), $content, $matches)) {
-            return $this->set($matches, $key, $value, $callback);
+            $variable = $this->createVariable($matches);
         }
 
         if (preg_match(sprintf('/%s="%s"/', $key, $oldValue), $content, $matches)) {
-            return $this->set($matches, $key, $value, $callback);
+            $variable = $this->createVariable($matches);
         }
 
-        throw new InvalidKeyValuePairException(sprintf('%s=%s', $key, $oldValue));
-    }
-
-    /**
-     * Parse key before putting into the .env file.
-     *
-     * @param string $key
-     *
-     * @return string
-     */
-    public function parseKey(string $key): string
-    {
-        return $key;
-    }
-
-    /**
-     * Parse value before putting into the .env file.
-     *
-     * @param mixed $value
-     *
-     * @return string
-     */
-    public function parseValue($value): string
-    {
-        $value = (string) $value;
-
-        if (preg_match("/\s/", $value)) {
-            $value = sprintf('"%s"', $value);
+        if (!isset($variable)) {
+            throw new InvalidKeyValuePairException(sprintf('%s=%s', $key, $oldValue));
         }
 
-        return $value;
+        return $variable;
     }
 
     /**
      * Set the new value.
      *
-     * @param array   $matches
-     * @param string  $key
-     * @param mixed   $value
-     * @param Closure $callback
+     * @param array  $matches
      */
-    public function set(array $matches, string $key, $value, Closure $callback = null)
+    public function createVariable(array $matches)
     {
-        $key = $this->parseKey($key);
-        $value = $this->parseValue($value);
+        $variable = new Variable();
+        $variable->setOriginal($matches[0]);
 
-        if ($callback) {
-            $callback($key, $value);
-        }
-
-        return $this->replace($matches[0], sprintf('%s=%s', $key, $value));
+        return $variable;
     }
 
     /**
      * Replace string in .env file.
      *
-     * @param string $original
-     * @param string $new
+     * @param Variable $variable
      */
-    public function replace(string $original, string $new)
+    public function persistVariable(Variable $variable)
     {
-        file_put_contents($this->filePath, str_replace($original, $new, file_get_contents($this->filePath)));
+        file_put_contents($this->filePath, str_replace($variable->getOriginal(), $variable->toFile(), file_get_contents($this->filePath)));
     }
+
+    /**
+     * Store the variable in the .env file.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function store(string $key, $value)
+    {
+        $variable = $this->prepare($key);
+        $variable->setKeyFromRaw($key);
+        $variable->setValueFromRaw($value);
+        $this->persistVariable($variable);
+
+        return $variable;
+    }
+
+    /**
+     * Remove the variable in the .env file.
+     *
+     * @param string $key
+     */
+    public function remove(string $key)
+    {
+        $variable = $this->prepare($key);
+        $variable->setKeyFromRaw($key);
+        $variable->setValue(false);
+        $this->persistVariable($variable);
+
+        return $variable;
+    }
+    
+
 }

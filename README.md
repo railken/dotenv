@@ -22,10 +22,14 @@ A simple usage looks like:
 ```php
 use Railken\Dotenv\Dotenv;
 
-$dotenv = new Dotenv(__DIR__);
+
+// Location of the directory that contains the .env file
+$path = __DIR__; 
+
+$dotenv = new Dotenv($path);
 $dotenv->load();
 
-$dotenv->store("APP_KEY", "NEW KEY");
+$dotenv->storeVariable("APP_KEY", "NEW KEY");
 ```
 
 The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
@@ -35,8 +39,9 @@ If you wish you can use directly the `Railken\Dotenv\Storage`
 ```php
 use Railken\Dotenv\Storage;
 
-$filePath = __DIR__ . "/.env";
+// Location of the directory that contains the .env file
+$path = __DIR__; 
 
-$storage = new Storage($filePath);
+$storage = new Storage($path);
 $storage->store("APP_KEY", "NEW KEY");
 ```

@@ -1,5 +1,7 @@
 <?php
 
+namespace Railken\Dotenv\Tests\Dotenv;
+
 use PHPUnit\Framework\TestCase;
 use Railken\Dotenv\Dotenv;
 

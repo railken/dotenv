@@ -18,14 +18,25 @@ class StorageTest extends TestCase
         ]);
     }
 
+    public function testWithSpecialCharacters()
+    {
+        $this->commonTest([
+            'x' => '1$2',
+            'y' => '"My Name"'
+        ], [
+            'x' => 'A$B',
+            'y' => 'My new Name',
+        ]);
+    }
+
     public function commonTest($org, $new)
     {
         $path = __DIR__."/../../var";
 
         $this->assureExistsDir($path);
-        file_put_contents($path."/.env", http_build_query($org, '', PHP_EOL));
+        file_put_contents($path."/.env", urldecode(http_build_query($org, '', PHP_EOL)));
         $dotenv = new Dotenv($path);
-        $dotenv->load();
+        $dotenv->overload();
 
         foreach ($new as $key => $value) {
             $dotenv->store($key, $value);

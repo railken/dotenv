@@ -2,6 +2,7 @@
 namespace Railken\Dotenv;
 
 use Dotenv\Loader;
+use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
 
 class Storage
 {
@@ -44,6 +45,8 @@ class Storage
         $content = file_get_contents($this->filePath);
         $oldValue = getenv($key);
 
+        $oldValue = str_replace("$", "\\$", $oldValue);
+
         if (preg_match(sprintf("/%s=%s/", $key, $oldValue), $content, $matches)) {
             return $this->replace($matches[0], $this->format($key, $value));
         }
@@ -52,7 +55,7 @@ class Storage
             return $this->replace($matches[0], $this->format($key, $value));
         }
 
-        throw new InvalidKeyValuePairException();
+        throw new InvalidKeyValuePairException(sprintf("%s=%s", $key, $oldValue));
     }
 
     /**
@@ -87,7 +90,13 @@ class Storage
      */
     public function parseValue($value): string
     {
-        return (string) $value;
+        $value = (string) $value;
+
+        if (preg_match("/\s/", $value)) {
+            $value = sprintf('"%s"', $value);
+        }
+
+        return $value;
     }
 
     /**

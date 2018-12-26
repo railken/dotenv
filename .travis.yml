@@ -53,8 +53,8 @@ jobs:
       before_script:
         - travis_retry composer update --prefer-dist --prefer-stable
       script:
-        - ./vendor/bin/phpstan analyse --level=0 src -c phpstan.neon
-        - ./vendor/bin/phpstan analyse --level=1 tests -c phpstan.neon
+        - ./vendor/bin/phpstan analyse --level=0 src
+        - ./vendor/bin/phpstan analyse --level=1 tests
     - stage: Style
       php: 7.2
       env: php-cs-fixer

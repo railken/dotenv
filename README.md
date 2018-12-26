@@ -28,9 +28,9 @@ $dotenv->load();
 $dotenv->store("APP_KEY", "NEW KEY");
 ```
 
-The class is a simple extension of `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
+The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
 
-If you wish to use indipendently it from the Dotenv, you can use directly the Storage, but you'll need a loader
+If you wish to use directly the Storage, you'll need a loader
 
 ```php
 use Railken\Dotenv\Storage;

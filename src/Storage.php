@@ -104,7 +104,7 @@ class Storage
         }
 
         if (!$variable->getOriginal()) {
-            throw new InvalidKeyValuePairException(sprintf('Cannot find key: %s', $key));
+            throw new InvalidKeyValuePairException(sprintf('Cannot find key: %s in %s', $key, $this->filePath));
         }
 
         return $variable;

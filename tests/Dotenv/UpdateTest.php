@@ -2,7 +2,7 @@
 
 namespace Railken\Dotenv\Tests\Dotenv;
 
-class StoreTest extends TestCase
+class UpdateTest extends TestCase
 {
     public function testBasics()
     {

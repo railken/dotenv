@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/railken/dotenv.svg?branch=master)](https://travis-ci.org/railken/dotenv)
 
-This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that grant you the ability to updated variables into the `.env` file.
+This library is an extension of [Dotenv](https://github.com/vlucas/phpdotenv) that grants you the ability to updated variables into the `.env` file.
 You can either update, append or remove a variable.
 
 # Requirements

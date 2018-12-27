@@ -96,22 +96,15 @@ class Storage
     protected function extract(string $key)
     {
         $content = file_get_contents($this->filePath);
-        $oldValue = getenv($key);
-
-        $oldValue = str_replace('$', '\$', $oldValue);
 
         $variable = new Variable();
 
-        if (preg_match(sprintf('/%s=%s/', $key, $oldValue), $content, $matches)) {
-            $variable->setOriginal($matches[0]);
-        }
-
-        if (preg_match(sprintf('/%s="%s"/', $key, $oldValue), $content, $matches)) {
+        if (preg_match(sprintf('/^%s=[^\r\n]*/m', $key), $content, $matches)) {
             $variable->setOriginal($matches[0]);
         }
 
         if (!$variable->getOriginal()) {
-            throw new InvalidKeyValuePairException(sprintf('%s=%s', $key, $oldValue));
+            throw new InvalidKeyValuePairException(sprintf('Cannot find key: %s', $key));
         }
 
         return $variable;

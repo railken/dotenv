@@ -2,6 +2,8 @@
 
 namespace Railken\Dotenv\Tests\Dotenv;
 
+use Railken\Dotenv\Exceptions\InvalidKeyValuePairException;
+
 class UpdateTest extends TestCase
 {
     public function testBasics()
@@ -21,6 +23,25 @@ class UpdateTest extends TestCase
         $this->commonTestAssert($endingVariables);
 
         $this->unlinkEnv();
+    }
+
+    public function testMismatchKey()
+    {
+        $this->expectException(InvalidKeyValuePairException::class);
+
+        $startingVariables = [
+            'x' => '1',
+        ];
+
+        $endingVariables = [
+            'y' => 'B',
+        ];
+
+        $this->iniEnv($startingVariables);
+        $this->commonTestStore($endingVariables);
+
+        $this->unlinkEnv();
+
     }
 
     public function testWithSpecialCharacters()

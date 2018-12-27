@@ -47,7 +47,7 @@ class StoreTest extends TestCase
         $dotenv = $this->getDotenv();
 
         foreach ($variables as $key => $value) {
-            $dotenv->storeVariable($key, $value);
+            $dotenv->updateVariable($key, $value);
         }
     }
 }

@@ -30,7 +30,7 @@ class Storage
      * @param string $key
      * @param mixed  $value
      */
-    public function store(string $key, $value = null)
+    public function update(string $key, $value = null)
     {
         $variable = $this->extract($key);
 

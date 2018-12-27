@@ -40,9 +40,9 @@ class Dotenv extends BaseDotenv
      * @param string $key
      * @param mixed  $value
      */
-    public function storeVariable(string $key, $value)
+    public function updateVariable(string $key, $value)
     {
-        $variable = $this->storage->store($key, $value);
+        $variable = $this->storage->update($key, $value);
 
         $this->loader->setEnvironmentVariable($variable->getKey(), $variable->getValue());
     }

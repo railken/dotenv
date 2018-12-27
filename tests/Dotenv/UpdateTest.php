@@ -41,7 +41,6 @@ class UpdateTest extends TestCase
         $this->commonTestStore($endingVariables);
 
         $this->unlinkEnv();
-
     }
 
     public function testWithSpecialCharacters()

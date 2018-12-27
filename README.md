@@ -46,7 +46,7 @@ use Railken\Dotenv\Storage;
 $path = __DIR__; 
 
 $storage = new Storage($path);
-$storage->update("APP_KEY", "NEW KEY");
+$storage->update("APP_KEY", "foo");
 $storage->append("NEW_KEY", 2);
 $storage->remove("NEW_KEY");
 ```

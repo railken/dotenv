@@ -35,7 +35,7 @@ $dotenv->appendVariable("NEW_KEY", 2);
 $dotenv->removeVariable("NEW_KEY");
 ```
 
-The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L6)
+The class `Railken\Dotenv\Dotenv` simply extends the class `Dotenv\Dotenv` as you can see [here](https://github.com/railken/dotenv/blob/master/src/Dotenv.php#L7)
 
 If you wish you can use directly the `Railken\Dotenv\Storage`
 

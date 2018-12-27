@@ -73,6 +73,22 @@ class Storage
     }
 
     /**
+     * Get updated file content.
+     *
+     * @param Variable $variable
+     *
+     * @return string
+     */
+    public function getUpdatedFileContent(Variable $variable): string
+    {
+        if ($variable->getOriginal()) {
+            return str_replace($variable->getOriginal(), $variable->toFile(), file_get_contents($this->filePath));
+        }
+
+        return file_get_contents($this->filePath).PHP_EOL.$variable->toFile();
+    }
+
+    /**
      * Store the variable in the .env file.
      *
      * @param string $key
@@ -108,10 +124,6 @@ class Storage
      */
     protected function persistVariable(Variable $variable)
     {
-        if ($variable->getOriginal()) {
-            file_put_contents($this->filePath, str_replace($variable->getOriginal(), $variable->toFile(), file_get_contents($this->filePath)));
-        } else {
-            file_put_contents($this->filePath, file_get_contents($this->filePath).PHP_EOL.$variable->toFile());
-        }
+        file_put_contents($this->filePath, $this->getUpdatedFileContent($variable));
     }
 }
